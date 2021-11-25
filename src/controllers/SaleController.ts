@@ -10,7 +10,7 @@ interface SaleProps {
   admin_id: string;
   value: string;
   costumer: string;
-  id_product: Product[]
+  products: Product[]
   amount: number
 }
 
@@ -25,7 +25,7 @@ class SaleController {
    * Method to create a sale
    */
   async create(request: Request, response: Response) {
-    const { admin_id, costumer, id_product } = request.body as SaleProps
+    const { admin_id, costumer, products } = request.body as SaleProps
 
     const [saleRepository, adminRepository, productRepository, /**saleProductRepository*/] = await Promise.all([
       getCustomRepository(SaleRepository),
@@ -38,20 +38,20 @@ class SaleController {
     let value = 0
 
     try {
-      for (const p of id_product) {
+      for (const p of products) {
         const product = await productRepository.findOne(p.id_product) as Product
-        value += parseFloat(p.price.toString())
+        value += parseFloat(p.price.toString()) * p.amount
 
-        for(const p2 of id_product) {
+        
           if (!product) {
             throw new Error("Product doesn't exists");
   
-          } else if (p2.amount > product.amount) {
+          } else if (p.amount > product.amount) {
             throw new Error("Amount greater than stock");
-          } 
-        }
-        product.amount = product.amount - p.amount
-        productRepository.save({ ...product });        
+          }else{
+            product.amount = product.amount - p.amount
+            productRepository.save({ ...product });     
+          }
       }
 
       if (!adminAlreadyExists) {
@@ -64,6 +64,7 @@ class SaleController {
         value,
         costumer,
         admin_id: adminAlreadyExists.id,
+        products
       });
 
      

@@ -1,7 +1,0 @@
-
-class SaleProduct {
-  
-}
-
-export { SaleProduct };
-
