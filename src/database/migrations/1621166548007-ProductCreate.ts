@@ -7,7 +7,7 @@ export class Product1619148160847 implements MigrationInterface {
         name: "product",
         columns: [
           {
-            name: "id_product",
+            name: "id_product", 
             type: "uuid",
             isPrimary: true,
             isUnique: true
