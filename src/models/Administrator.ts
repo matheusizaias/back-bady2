@@ -1,9 +1,10 @@
 import bcrypt from "bcryptjs";
-import { BeforeInsert, BeforeUpdate, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { BeforeInsert, BeforeUpdate, Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { v4 as uuid } from "uuid";
+import Sales from "./Sales";
 
 @Entity("admin")
-class Admin {
+export default class Admin {
   @PrimaryGeneratedColumn("uuid")
   readonly id: string;
 
@@ -21,6 +22,9 @@ class Admin {
   hashPassword() {
     this.password = bcrypt.hashSync(this.password, 8);
   }
+
+  @OneToMany(type => Sales, admin => Admin)
+  sales:Sales[]
 
   constructor() {
     if (!this.id) {

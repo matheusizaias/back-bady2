@@ -3,14 +3,17 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
   PrimaryColumn
 } from "typeorm";
 import { Admin } from "./Administrator";
 import { v4 as uuid } from "uuid";
+import Product from "./Products";
 
 @Entity("sales")
-class Sales {
+export default class Sales {
   @PrimaryColumn()
   readonly id_sale: string;
 
@@ -29,9 +32,12 @@ class Sales {
   @Column()
   admin_id: string;
 
-  @ManyToOne(() => Admin)
-  @JoinColumn({ name: "admin_id" })
+  @ManyToOne(type => Admin, sales => Sales, {eager: true})
   admin: Admin;
+
+  @ManyToMany(type => Product)
+  @JoinTable()
+  products:Product[]
 
   constructor() {
     if (!this.id_sale) {

@@ -3,7 +3,7 @@ import { Category } from "./Categories";
 import { v4 as uuid } from "uuid";
 
 @Entity("product")
-class Product {
+export default class Product {
   @PrimaryColumn()
   readonly id_product: string;
 
@@ -19,11 +19,10 @@ class Product {
   @Column()
   name_category: string
 
-  @ManyToOne(() => Category)
-  @JoinColumn({ 
-    name: "name_category",
-    referencedColumnName: "category_name" 
-  })
+  @ManyToOne(type => Category, products => Product, {eager: true})
+  @JoinColumn({name: "name_category",
+  referencedColumnName: "category_name"}
+  )
   category: Category
 
   constructor() {
