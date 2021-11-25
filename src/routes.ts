@@ -22,7 +22,7 @@ router.post("/session", adminController.authenticate);
 /**
  * Routes below middleware require the token
  */
- router.use(authmiddleware);
+//  router.use(authmiddleware);
  
 router.get("/show-admin", adminController.show);
 
