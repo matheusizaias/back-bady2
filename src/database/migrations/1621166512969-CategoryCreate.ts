@@ -14,7 +14,8 @@ export class Categorie1619148174670 implements MigrationInterface {
           },
           {
             name: "category_name",
-            type: "varchar"
+            type: "varchar",
+            isUnique: true
           }
         ]
       })
