@@ -3,6 +3,7 @@ import { AdminController } from "./controllers/AdminController";
 import { CategoryController } from "./controllers/CategoryController";
 import { ProductController } from "./controllers/ProductController";
 import { SaleController } from "./controllers/SaleController";
+import { SaleProductController } from "./controllers/SaleProductController";
 import { authmiddleware } from "./middleware/authMiddleware";
 
 const router = Router();
@@ -11,6 +12,7 @@ const adminController = new AdminController();
 const saleController = new SaleController();
 const categoryController = new CategoryController();
 const productController = new ProductController();
+const saleProductController = new SaleProductController();
 
 router.get("/", (request: Request, response: Response) => {
   return response.json({ message: "Bady Doces API" });
@@ -33,6 +35,8 @@ router.delete("/delete-sale/:id", saleController.delete);
 router.get("/show-sales-by-constumer/:costumer", saleController.showSaleByCostumer)
 // router.post("/set-delivered/:id", saleController.setDelivered);
 // router.get("/count-delivered", saleController.countDeliverdeSales);
+
+router.post("/new-saleProduct,", saleProductController.create);
 
 router.post("/new-category", categoryController.create);
 router.get("/show-category", categoryController.show);
