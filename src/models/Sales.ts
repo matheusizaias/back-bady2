@@ -38,7 +38,7 @@ export default class Sales {
   )
   admin: Admin;
 
-  @ManyToMany(type => Product)
+  @ManyToMany(type => Product, {eager:true})
   @JoinTable()
   products:Product[]
 
