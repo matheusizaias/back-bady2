@@ -64,13 +64,14 @@ class SaleController {
       const sale = saleRepository.create({
         value,
         costumer,
-        admin_id: adminAlreadyExists.id,
-        products
+        admin_id: adminAlreadyExists.id
       });
 
      
 
       await saleRepository.save(sale);
+
+      
 
       // for (const p3 of id_product) {
       //   const saleProduct = saleProductRepository.create({

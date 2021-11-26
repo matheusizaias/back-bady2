@@ -3,14 +3,11 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
-  JoinTable,
-  ManyToMany,
   ManyToOne,
   PrimaryColumn
 } from "typeorm";
 import { Admin } from "./Administrator";
 import { v4 as uuid } from "uuid";
-import Product from "./Products";
 
 @Entity("sales")
 export default class Sales {
@@ -37,10 +34,6 @@ export default class Sales {
   referencedColumnName: "id"}
   )
   admin: Admin;
-
-  @ManyToMany(type => Product, {eager:true})
-  @JoinTable()
-  products:Product[]
 
   constructor() {
     if (!this.id_sale) {

@@ -23,9 +23,6 @@ export default class Admin {
     this.password = bcrypt.hashSync(this.password, 8);
   }
 
-  @OneToMany(type => Sales, admin => Admin)
-  sales:Sales[]
-
   constructor() {
     if (!this.id) {
       this.id = uuid();

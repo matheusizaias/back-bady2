@@ -10,9 +10,6 @@ export default class Category {
   @Column()
   category_name: string;
 
-  @OneToMany(type => Product, category => Category)
-  products:Product[]
-
   constructor() {
     if (!this.id) {
       this.id = uuid();

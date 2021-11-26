@@ -35,16 +35,6 @@ export class SalesCreate1618948291183 implements MigrationInterface {
             name: "admin_id",
             type: "uuid"
           }
-        ],
-        foreignKeys: [
-          {
-            name: "FKadmin",
-            referencedTableName: "admin",
-            referencedColumnNames: ["id"],
-            columnNames: ["admin_id"],
-            onDelete: "CASCADE",
-            onUpdate: "CASCADE"
-          }
         ]
       })
     );

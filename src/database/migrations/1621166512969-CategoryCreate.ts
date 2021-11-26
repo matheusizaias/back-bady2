@@ -8,14 +8,14 @@ export class Categorie1619148174670 implements MigrationInterface {
         columns: [
           {
             name: "id",
-            type: "uuid",
-            isPrimary: true,
-            isUnique: true
+            type: "uuid"
           },
           {
             name: "category_name",
             type: "varchar",
+            isPrimary: true,
             isUnique: true
+            
           }
         ]
       })
