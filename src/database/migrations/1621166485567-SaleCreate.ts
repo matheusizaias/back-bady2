@@ -1,4 +1,4 @@
-import { MigrationInterface, QueryRunner, Table } from "typeorm";
+import { IsNull, MigrationInterface, QueryRunner, Table } from "typeorm";
 
 export class SalesCreate1618948291183 implements MigrationInterface {
   public async up (queryRunner: QueryRunner): Promise<void> {
@@ -23,7 +23,8 @@ export class SalesCreate1618948291183 implements MigrationInterface {
           {
             name: "delivered",
             type: "boolean",
-            default: false
+            default: false,
+            isNullable: true
           },
           {
             name: "created_at",
