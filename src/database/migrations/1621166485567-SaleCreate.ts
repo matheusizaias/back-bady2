@@ -34,7 +34,7 @@ export class SalesCreate1618948291183 implements MigrationInterface {
             name: "admin_id",
             type: "uuid"
           }
-        // ],
+        ],
         // foreignKeys: [
         //   {
         //     name: "FKadmin",
@@ -44,7 +44,7 @@ export class SalesCreate1618948291183 implements MigrationInterface {
         //     onDelete: "CASCADE",
         //     onUpdate: "CASCADE"
         //   }
-        ]
+        // ]
       })
     );
   }

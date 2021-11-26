@@ -33,6 +33,9 @@ export default class Sales {
   admin_id: string;
 
   @ManyToOne(type => Admin, sales => Sales, {eager: true})
+  @JoinColumn({name: "admin_id",
+  referencedColumnName: "id"}
+  )
   admin: Admin;
 
   @ManyToMany(type => Product)

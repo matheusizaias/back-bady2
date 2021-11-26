@@ -10,6 +10,7 @@ export class AdministratorCreate1618946759810 implements MigrationInterface {
             name: "id",
             type: "uuid",
             isPrimary: true,
+            isUnique: true
           },
           {
             name: "name",

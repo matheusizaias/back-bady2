@@ -28,16 +28,16 @@ export class Product1619148160847 implements MigrationInterface {
             name: "name_category",
             type: "varchar"
           }
-        ],
-        foreignKeys: [
-          {
-            name: "FKcategory",
-            referencedTableName: "category",
-            referencedColumnNames: ["category_name"],
-            columnNames: ["name_category"],
-            onDelete: "CASCADE",
-            onUpdate: "CASCADE"
-          }
+        // ],
+        // foreignKeys: [
+        //   {
+        //     name: "FKcategory",
+        //     referencedTableName: "category",
+        //     referencedColumnNames: ["category_name"],
+        //     columnNames: ["name_category"],
+        //     onDelete: "CASCADE",
+        //     onUpdate: "CASCADE"
+        //   }
         ]
       })
     );

@@ -9,12 +9,12 @@ export class Categorie1619148174670 implements MigrationInterface {
           {
             name: "id",
             type: "uuid",
-            isPrimary: true
+            isPrimary: true,
+            isUnique: true
           },
           {
             name: "category_name",
-            type: "varchar",
-            isUnique: true
+            type: "varchar"
           }
         ]
       })
