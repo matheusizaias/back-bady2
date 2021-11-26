@@ -1,77 +1,72 @@
 import { Request, Response } from 'express';
 import { getCustomRepository } from 'typeorm';
-import { AdminRepository } from '../repositories/AdminRespository';
 import { ProductRepository } from '../repositories/ProductRepository';
+import { SaleProductRepository } from '../repositories/SaleProductRepository';
 import { SaleRepository } from '../repositories/SaleRepository';
 import saleView from '../views/saleView';
 
-interface SaleProps {
+interface SaleProduct {
   id_sale: string;
-  admin_id: string;
-  value: string;
-  costumer: string;
-  products: Product[]
-  amount: number
+  id_product: string;
+  qtd: number;
+  price: number;
+  total: number;
 }
 
-type Product = {
-  id_product: string;
-  amount: number;
-  price: number
-}
+// type Product = {
+//   id_product: string;
+//   amount: number;
+//   price: number
+// }
 
 class SaleProductController {
   /**
    * Method to create a sale
    */
   async create(request: Request, response: Response) {
-    const { id_sale, products, amount} = request.body as SaleProps
+    const { id_sale, id_product, qtd, price} = request.body as SaleProduct
 
-    const [saleRepository, adminRepository, productRepository, /**saleProductRepository*/] = await Promise.all([
+    const [saleRepository, productRepository, saleProductRepository] = await Promise.all([
       getCustomRepository(SaleRepository),
-      getCustomRepository(AdminRepository),
       getCustomRepository(ProductRepository),
-      // getCustomRepository(SaleProductRepository)
+      getCustomRepository(SaleProductRepository)
     ])
 
-    // const adminAlreadyExists = await adminRepository.findOne({ id: admin_id });
-    let value = 0
+    let total = 0
 
     try {
-      for (const p of products) {
-        const product = await productRepository.findOne(p.id_product) as Product
-        value += parseFloat(p.price.toString()) * p.amount
 
-        
-          if (!product) {
-            throw new Error("Product doesn't exists");
-  
-          } else if (p.amount > product.amount) {
-            throw new Error("Amount greater than stock");
-          }else{
-            product.amount = product.amount - p.amount
-            productRepository.save({ ...product });     
-          }
 
+      const product = await productRepository.findOne({id_product: id_product});
+
+      const sale = await saleRepository.findOne({id_sale: id_sale});
+      
+      if(!sale)
+      {
+        throw new Error("Sale doesn't exists");
+      }else if (!product) {
+        throw new Error("Product doesn't exists");
+
+      } else if (qtd > product.amount) {
+        throw new Error("Amount greater than stock");
+      }else{
+        product.amount = product.amount - qtd
+        productRepository.save({ ...product });     
       }
 
-      // if (!adminAlreadyExists) {
-      //   return response.status(400).json({
-      //     error: 'User not found',
-      //   });
-      // }
+      total = price * qtd;
 
-      // const sale = saleRepository.create({
-      //   value,
-      //   admin_id: adminAlreadyExists.id
-      // });
+      const saleProduct = await saleProductRepository.create({
+        salesIdSale: id_sale,
+        productIdProduct: id_product,
+        qtd: qtd,
+        price: price,
+        total: total
+      });
 
-     
+      await saleProductRepository.save(saleProduct);
 
-      // await saleRepository.save(sale);
-
-
-      // return response.status(200).json(sale);
+      return response.status(200).json(saleProduct);
 
     } catch (error) {
       return response.status(400).json(error.message)

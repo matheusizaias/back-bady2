@@ -44,6 +44,8 @@ class SaleController {
 
       await saleRepository.save(sale);
 
+      saleProductRepository.create()
+
       return response.status(200).json(sale);
 
     } catch (error) {
