@@ -64,7 +64,7 @@ class SaleController {
         value,
         costumer,
         admin_id: adminAlreadyExists.id,
-        products
+        products: products
       });
 
      
