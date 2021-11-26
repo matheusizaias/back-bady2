@@ -37,6 +37,8 @@ class SaleController {
     const adminAlreadyExists = await adminRepository.findOne({ id: admin_id });
     let value = 0
 
+    let salessss
+
     try {
       for (const p of products) {
         const product = await productRepository.findOne(p.id_product) as Product
@@ -52,6 +54,8 @@ class SaleController {
             product.amount = product.amount - p.amount
             productRepository.save({ ...product });     
           }
+
+          salessss = saleRepository.findOne(p.id_product)
       }
 
       if (!adminAlreadyExists) {
@@ -64,7 +68,7 @@ class SaleController {
         value,
         costumer,
         admin_id: adminAlreadyExists.id,
-        products: products
+        products: salessss
       });
 
      
