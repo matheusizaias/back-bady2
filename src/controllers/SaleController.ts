@@ -39,43 +39,45 @@ class SaleController {
 
     const adminAlreadyExists = await adminRepository.findOne({ id: admin_id });
 
-    // getConnection().transaction()
-
-    try {
-      let value = 0;
-
-      for (const product of products) {
-        value += parseFloat(product.price.toString());
-      }
-
-      if (!adminAlreadyExists) {
-        return response.status(400).json({
-          error: "User not found",
-        });
-      }
-
-      const sale = saleRepository.create({
-        costumer,
-        admin_id: adminAlreadyExists.id,
-        value: value,
-      });
-
-      const id_sale = await saleRepository.save(sale);
-
-      for (const product of products) {
+    getConnection().transaction(async transactionSale => 
+      {
         try {
-          await spController.create(product as any, id_sale);
+          let value = 0;
+    
+          for (const product of products) {
+            value += parseFloat(product.price.toString());
+          }
+    
+          if (!adminAlreadyExists) {
+            return response.status(400).json({
+              error: "User not found",
+            });
+          }
+    
+          const sale = saleRepository.create({
+            costumer,
+            admin_id: adminAlreadyExists.id,
+            value: value,
+          });
+    
+          const id_sale = await saleRepository.save(sale);
+    
+          for (const product of products) {
+            try {
+              await spController.create(product as any, id_sale);
+            } catch (error) {
+              throw new Error("Erro de Transação" + error.message);
+            }
+          }
+    
+          return response.status(200).json(sale);
         } catch (error) {
-          throw new Error("Erro de Transação" + error.message);
+          return response
+            .status(400)
+            .json("erro no sale controller" + error.message);
         }
-      }
-
-      return response.status(200).json(sale);
-    } catch (error) {
-      return response
-        .status(400)
-        .json("erro no sale controller" + error.message);
-    }
+      });
+       
   }
 
   /**
