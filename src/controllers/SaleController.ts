@@ -14,7 +14,7 @@ interface SaleProps {
   value: string;
   costumer: string;
   amount: number;
-  products: Product[]
+  id_product: Product[]
 }
 
 
@@ -23,9 +23,7 @@ class SaleController {
    * Method to create a sale
    */
   async create(request: Request, response: Response) {
-    const { admin_id, costumer, products} = request.body as SaleProps
-
-    return response.json(products)
+    const { admin_id, costumer, id_product: products} = request.body as SaleProps
 
     const [saleRepository, adminRepository, saleProductRepository] = await Promise.all([
       getCustomRepository(SaleRepository),
