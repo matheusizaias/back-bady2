@@ -50,7 +50,7 @@ class SaleController {
       let value = 0;
 
       for (const product of products) {
-        value += parseFloat(product.price.toString()) * product.amount;
+        value += parseFloat(product.price.toString());
       }
 
       if (!adminAlreadyExists) {
