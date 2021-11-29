@@ -31,7 +31,7 @@ class SaleController {
    * Method to create a sale
    */
   @Transaction()
-  async create(request: Request, response: Response, @TransactionManager() manager: EntityManager) {
+  async create(request: Request, response: Response) {
     const {
       admin_id,
       costumer,
@@ -70,7 +70,7 @@ class SaleController {
 
       let id_sale
 
-      manager.save(id_sale = await saleRepository.save(sale));
+      getConnection().createEntityManager().save(id_sale = await saleRepository.save(sale));
 
       for (const product of products) {
         try {
