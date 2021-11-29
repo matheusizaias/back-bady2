@@ -14,7 +14,7 @@ interface SaleProps {
   value: string;
   costumer: string;
   amount: number;
-  product: Product[]
+  products: Product[]
 }
 
 
@@ -23,7 +23,9 @@ class SaleController {
    * Method to create a sale
    */
   async create(request: Request, response: Response) {
-    const { admin_id, costumer, product} = request.body as SaleProps
+    const { admin_id, costumer, products} = request.body as SaleProps
+
+    return response.json(products)
 
     const [saleRepository, adminRepository, saleProductRepository] = await Promise.all([
       getCustomRepository(SaleRepository),
@@ -46,9 +48,9 @@ class SaleController {
 
       let value = 0;
 
-      for(const p of product)
+      for(const product of products)
       {
-        value+= parseFloat(p.price.toString()) * p.amount;
+        value+= parseFloat(product.price.toString()) * product.amount;
       }
       
       if (!adminAlreadyExists) {
@@ -63,15 +65,12 @@ class SaleController {
         value: value
       });
 
-      await saleRepository.save(sale);
-
-      const id_sale = await connection.createQueryBuilder().select('id_sale').from(Sales, 'sales')
-      .orderBy("sales.id_sale", "DESC").getOne();
+      const id_sale = await saleRepository.save(sale);
 
 
-      for(const p of product)
+      for(const product of products)
       {
-        await spController.create(p, id_sale);
+        await spController.create(product, id_sale);
       }
 
       await queryRunner.commitTransaction();
