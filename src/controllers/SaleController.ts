@@ -59,7 +59,7 @@ class SaleController {
 
       for(const p of product)
       {
-        spController.create(request, response, p);
+        await spController.create(request, response, p);
       }
       
 
