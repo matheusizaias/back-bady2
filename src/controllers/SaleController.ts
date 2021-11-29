@@ -47,7 +47,7 @@ class SaleController {
     const adminAlreadyExists = await adminRepository.findOne({ id: admin_id });
 
     await getConnection().transaction(async (transactionSale) => {
-      // transactionSale.queryRunner.startTransaction();
+      transactionSale.queryRunner.startTransaction();
       try {
         let value = 0;
 
@@ -77,10 +77,10 @@ class SaleController {
           }
         }
 
-        // transactionSale.queryRunner.commitTransaction();
+        transactionSale.queryRunner.commitTransaction();
         return response.status(200).json(sale);
       } catch (error) {
-        // transactionSale.queryRunner.rollbackTransaction();
+        transactionSale.queryRunner.rollbackTransaction();
         return response
           .status(400)
           .json("erro no sale controller" + error.message);
