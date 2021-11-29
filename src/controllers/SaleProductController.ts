@@ -65,7 +65,7 @@ class SaleProductController {
 
       total = p.price * p.amount;
 
-      const saleProduct = await saleProductRepository.create({
+      const saleProduct = saleProductRepository.create({
         salesIdSale: id_sale.id_sale,
         productIdProduct: p.id,
         qtd: p.amount,
