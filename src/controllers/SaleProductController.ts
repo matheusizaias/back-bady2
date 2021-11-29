@@ -33,8 +33,6 @@ class SaleProductController {
       getCustomRepository(SaleProductRepository)
     ])
 
-    let total = 0
-
     try {
 
 
@@ -54,14 +52,12 @@ class SaleProductController {
         productRepository.save({ ...product });     
       }
 
-      total = p.price * p.amount;
-
       const saleProduct = saleProductRepository.create({
         salesIdSale: id_sale.id_sale,
         productIdProduct: p.id,
         qtd: p.amount,
-        price: p.price,
-        total: total
+        price: p.price / p.amount,
+        total: p.price
       });
 
       await saleProductRepository.save(saleProduct);

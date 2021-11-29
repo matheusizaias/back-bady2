@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { Connection, getConnection, getCustomRepository } from "typeorm";
+import { Connection, getConnection, getCustomRepository, Repository, Transaction, TransactionRepository } from "typeorm";
 import Product from "../models/Products";
 import Sales from "../models/Sales";
 import { AdminRepository } from "../repositories/AdminRespository";
@@ -21,6 +21,7 @@ class SaleController {
   /**
    * Method to create a sale
    */
+  @Transaction()
   async create(request: Request, response: Response) {
     const {
       admin_id,
@@ -39,12 +40,7 @@ class SaleController {
 
     const adminAlreadyExists = await adminRepository.findOne({ id: admin_id });
 
-    const connection = getConnection();
-    const queryRunner = connection.createQueryRunner();
-
-    await queryRunner.connect();
-
-    await queryRunner.startTransaction();
+    // getConnection().transaction(async )
 
     try {
       let value = 0;
@@ -75,10 +71,8 @@ class SaleController {
         }
       }
 
-      await queryRunner.commitTransaction();
       return response.status(200).json(sale);
     } catch (error) {
-      await queryRunner.rollbackTransaction();
       return response
         .status(400)
         .json("erro no sale controller" + error.message);
