@@ -68,7 +68,7 @@ class SaleController {
 
       for(const product of products)
       {
-        await spController.create(product, id_sale);
+        await spController.create(product as any, id_sale);
       }
 
       await queryRunner.commitTransaction();

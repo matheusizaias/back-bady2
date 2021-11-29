@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
 import { getConnection, getCustomRepository } from 'typeorm';
-import Product from '../models/Products';
 import Sales from '../models/Sales';
 import { ProductRepository } from '../repositories/ProductRepository';
 import { SaleProductRepository } from '../repositories/SaleProductRepository';
@@ -15,11 +14,11 @@ interface SaleProduct {
   total: number;
 }
 
-// type Product = {
-//   id_product: string;
-//   amount: number;
-//   price: number
-// }
+type Product = {
+  id: string;
+  amount: number;
+  price: number
+}
 
 class SaleProductController {
   /**
@@ -44,7 +43,7 @@ class SaleProductController {
     try {
 
 
-      const product = await productRepository.findOne({id_product: p.id_product});
+      const product = await productRepository.findOne({id_product: p.id});
 
       const sale = await saleRepository.findOne({id_sale: id_sale.id_sale});
       
@@ -68,7 +67,7 @@ class SaleProductController {
 
       const saleProduct = await saleProductRepository.create({
         salesIdSale: id_sale.id_sale,
-        productIdProduct: p.id_product,
+        productIdProduct: p.id,
         qtd: p.amount,
         price: p.price,
         total: total
