@@ -1,12 +1,12 @@
-import { Request, Response } from 'express';
-import { Connection, getConnection, getCustomRepository } from 'typeorm';
-import Product from '../models/Products';
-import Sales from '../models/Sales';
-import { AdminRepository } from '../repositories/AdminRespository';
-import { SaleProductRepository } from '../repositories/SaleProductRepository';
-import { SaleRepository } from '../repositories/SaleRepository';
-import saleView from '../views/saleView';
-import { SaleProductController } from './SaleProductController';
+import { Request, Response } from "express";
+import { Connection, getConnection, getCustomRepository } from "typeorm";
+import Product from "../models/Products";
+import Sales from "../models/Sales";
+import { AdminRepository } from "../repositories/AdminRespository";
+import { SaleProductRepository } from "../repositories/SaleProductRepository";
+import { SaleRepository } from "../repositories/SaleRepository";
+import saleView from "../views/saleView";
+import { SaleProductController } from "./SaleProductController";
 
 interface SaleProps {
   id_sale: string;
@@ -14,22 +14,26 @@ interface SaleProps {
   value: string;
   costumer: string;
   amount: number;
-  id_product: Product[]
+  id_product: Product[];
 }
-
 
 class SaleController {
   /**
    * Method to create a sale
    */
   async create(request: Request, response: Response) {
-    const { admin_id, costumer, id_product: products} = request.body as SaleProps
+    const {
+      admin_id,
+      costumer,
+      id_product: products,
+    } = request.body as SaleProps;
 
-    const [saleRepository, adminRepository, saleProductRepository] = await Promise.all([
-      getCustomRepository(SaleRepository),
-      getCustomRepository(AdminRepository),
-      getCustomRepository(SaleProductRepository)
-    ])
+    const [saleRepository, adminRepository, saleProductRepository] =
+      await Promise.all([
+        getCustomRepository(SaleRepository),
+        getCustomRepository(AdminRepository),
+        getCustomRepository(SaleProductRepository),
+      ]);
 
     const spController = new SaleProductController();
 
@@ -43,46 +47,41 @@ class SaleController {
     await queryRunner.startTransaction();
 
     try {
-
       let value = 0;
 
-      for(const product of products)
-      {
-        value+= parseFloat(product.price.toString()) * product.amount;
+      for (const product of products) {
+        value += parseFloat(product.price.toString()) * product.amount;
       }
-      
+
       if (!adminAlreadyExists) {
         return response.status(400).json({
-          error: 'User not found',
+          error: "User not found",
         });
       }
 
       const sale = saleRepository.create({
         costumer,
         admin_id: adminAlreadyExists.id,
-        value: value
+        value: value,
       });
 
       const id_sale = await saleRepository.save(sale);
 
-      try
-      {
-        for(const product of products)
-        {
+      for (const product of products) {
+        try {
           await spController.create(product as any, id_sale);
+        } catch (error) {
+          throw new Error("Erro de Transação" + error.message);
         }
-
-        await queryRunner.commitTransaction();
-      }catch(error)
-      {
-        throw new Error("Erro de Transação" + error.message);
       }
 
+      await queryRunner.commitTransaction();
       return response.status(200).json(sale);
-
     } catch (error) {
       await queryRunner.rollbackTransaction();
-      return response.status(400).json('erro no sale controller' + error.message)
+      return response
+        .status(400)
+        .json("erro no sale controller" + error.message);
     }
   }
 
@@ -102,26 +101,28 @@ class SaleController {
     const sales = await saleRepository.find({
       order: {
         created_at: "DESC",
-      }
-    })
+      },
+    });
 
     return response.status(200).json(sales);
   }
 
   /**
-   * Method to delete a sale 
+   * Method to delete a sale
    */
 
   async delete(request: Request, response: Response) {
-    const saleRepository = await getCustomRepository(SaleRepository)
+    const saleRepository = await getCustomRepository(SaleRepository);
     const sale = await saleRepository.findOne(request.params.id);
 
     if (sale) {
-      const result = await getCustomRepository(SaleRepository).delete(sale.id_sale);
+      const result = await getCustomRepository(SaleRepository).delete(
+        sale.id_sale
+      );
       return response.json(result);
     }
     return response.status(200).json({
-      error: "Sale not found"
+      error: "Sale not found",
     });
   }
 
@@ -130,7 +131,6 @@ class SaleController {
    */
 
   async setDelivered(request: Request, response: Response) {
-
     const saleRepository = await getCustomRepository(SaleRepository);
     const sale = await saleRepository.findOne(request.params.id);
 
@@ -148,12 +148,12 @@ class SaleController {
   async countDeliverdeSales(request: Request, response: Response) {
     const saleRepository = await getCustomRepository(SaleRepository);
     const sale = await saleRepository.findAndCount({
-      delivered: true
+      delivered: true,
     });
 
     if (sale[1] == 0 || sale[0] == null) {
       return response.status(200).json({
-        error: "There is no sale delivered"
+        error: "There is no sale delivered",
       });
     }
     return response.json(sale);
@@ -162,18 +162,17 @@ class SaleController {
     const saleRepository = await getCustomRepository(SaleRepository);
     const sales = await saleRepository.find({
       where: {
-        costumer: request.params.costumer
-      }
-    })
+        costumer: request.params.costumer,
+      },
+    });
     if (!sales) {
       return response.status(400).json({
-        error: "Costumer deost'n exists"
-      })
+        error: "Costumer deost'n exists",
+      });
     }
 
-    return response.status(200).json(saleView.renderMany(sales))
+    return response.status(200).json(saleView.renderMany(sales));
   }
 }
 
 export { SaleController };
-
