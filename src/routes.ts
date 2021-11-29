@@ -36,7 +36,7 @@ router.get("/show-sales-by-constumer/:costumer", saleController.showSaleByCostum
 // router.post("/set-delivered/:id", saleController.setDelivered);
 // router.get("/count-delivered", saleController.countDeliverdeSales);
 
-router.post("/new-saleProduct,", saleProductController.create);
+//router.post("/new-saleProduct,", saleProductController.create);
 
 router.post("/new-category", categoryController.create);
 router.get("/show-category", categoryController.show);
