@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { getConnection, getCustomRepository } from 'typeorm';
 import Product from '../models/Products';
+import Sales from '../models/Sales';
 import { ProductRepository } from '../repositories/ProductRepository';
 import { SaleProductRepository } from '../repositories/SaleProductRepository';
 import { SaleRepository } from '../repositories/SaleRepository';
@@ -24,8 +25,8 @@ class SaleProductController {
   /**
    * Method to create a sale
    */
-  async create(request: Request, response: Response, p: Product) {
-    const { id_sale, id_product, qtd, price} = request.body as SaleProduct
+  async create(p: Product, id_sale: Sales) {
+    //const { id_sale, id_product, qtd, price} = request.body as SaleProduct
 
     const [saleRepository, productRepository, saleProductRepository] = await Promise.all([
       getCustomRepository(SaleRepository),
@@ -43,9 +44,9 @@ class SaleProductController {
     try {
 
 
-      const product = await productRepository.findOne({id_product: id_product});
+      const product = await productRepository.findOne({id_product: p.id_product});
 
-      const sale = await saleRepository.findOne({id_sale: id_sale});
+      const sale = await saleRepository.findOne({id_sale: id_sale.id_sale});
       
       if(!sale)
       {
@@ -55,33 +56,33 @@ class SaleProductController {
         await queryRunner.rollbackTransaction();
         throw new Error("Product doesn't exists");
 
-      } else if (qtd > product.amount) {
+      } else if (p.amount > product.amount) {
         await queryRunner.rollbackTransaction();
         throw new Error("Amount greater than stock");
       }else{
-        product.amount = product.amount - qtd
+        product.amount = product.amount - p.amount
         productRepository.save({ ...product });     
       }
 
-      total = price * qtd;
+      total = p.price * p.amount;
 
       const saleProduct = await saleProductRepository.create({
-        salesIdSale: id_sale,
+        salesIdSale: id_sale.id_sale,
         productIdProduct: p.id_product,
-        qtd: qtd,
-        price: price,
+        qtd: p.amount,
+        price: p.price,
         total: total
       });
 
       await saleProductRepository.save(saleProduct);
 
-      await queryRunner.commitTransaction();
+      //await queryRunner.commitTransaction();
 
-      return response.status(200).json(saleProduct);
+      // return response.status(200).json(saleProduct);
 
     } catch (error) {
-      await queryRunner.rollbackTransaction();
-      return response.status(400).json(error.message)
+      //await queryRunner.rollbackTransaction();
+      return console.log(error.message)
     }
   }
 

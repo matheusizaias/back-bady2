@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
-import { getConnection, getCustomRepository } from 'typeorm';
+import { Connection, getConnection, getCustomRepository } from 'typeorm';
 import Product from '../models/Products';
+import Sales from '../models/Sales';
 import { AdminRepository } from '../repositories/AdminRespository';
 import { SaleProductRepository } from '../repositories/SaleProductRepository';
 import { SaleRepository } from '../repositories/SaleRepository';
@@ -56,11 +57,16 @@ class SaleController {
 
       await saleRepository.save(sale);
 
+      const id_sale = await connection.createQueryBuilder().select('id_sale').from(Sales, 'sales')
+      .orderBy("sales.id_sale", "DESC").getOne();
+
 
       for(const p of product)
       {
-        await spController.create(request, response, p);
+        await spController.create(p, id_sale);
       }
+
+      await queryRunner.commitTransaction();
       
 
       return response.status(200).json(sale);
