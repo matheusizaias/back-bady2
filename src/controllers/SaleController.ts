@@ -43,6 +43,13 @@ class SaleController {
     await queryRunner.startTransaction();
 
     try {
+
+      let value = 0;
+
+      for(const p of product)
+      {
+        value+= parseFloat(p.price.toString()) * p.amount;
+      }
       
       if (!adminAlreadyExists) {
         return response.status(400).json({
@@ -52,7 +59,8 @@ class SaleController {
 
       const sale = saleRepository.create({
         costumer,
-        admin_id: adminAlreadyExists.id
+        admin_id: adminAlreadyExists.id,
+        value: value
       });
 
       await saleRepository.save(sale);
