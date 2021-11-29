@@ -1,10 +1,12 @@
 import { Request, Response } from "express";
 import {
   Connection,
+  EntityManager,
   getConnection,
   getCustomRepository,
   Repository,
   Transaction,
+  TransactionManager,
   TransactionRepository,
 } from "typeorm";
 import Product from "../models/Products";
@@ -28,7 +30,8 @@ class SaleController {
   /**
    * Method to create a sale
    */
-  async create(request: Request, response: Response) {
+  @Transaction()
+  async create(request: Request, response: Response, @TransactionManager() manager: EntityManager) {
     const {
       admin_id,
       costumer,
@@ -46,46 +49,43 @@ class SaleController {
 
     const adminAlreadyExists = await adminRepository.findOne({ id: admin_id });
 
-    await getConnection().transaction(async (transactionSale) => {
-      transactionSale.queryRunner.startTransaction();
-      try {
-        let value = 0;
+    try {
+      let value = 0;
 
-        for (const product of products) {
-          value += parseFloat(product.price.toString());
-        }
-
-        if (!adminAlreadyExists) {
-          return response.status(400).json({
-            error: "User not found",
-          });
-        }
-
-        const sale = saleRepository.create({
-          costumer,
-          admin_id: adminAlreadyExists.id,
-          value: value,
-        });
-
-        const id_sale = await saleRepository.save(sale);
-
-        for (const product of products) {
-          try {
-            await spController.create(product as any, id_sale);
-          } catch (error) {
-            throw new Error("Erro de Transação" + error.message);
-          }
-        }
-
-        transactionSale.queryRunner.commitTransaction();
-        return response.status(200).json(sale);
-      } catch (error) {
-        transactionSale.queryRunner.rollbackTransaction();
-        return response
-          .status(400)
-          .json("erro no sale controller" + error.message);
+      for (const product of products) {
+        value += parseFloat(product.price.toString());
       }
-    });
+
+      if (!adminAlreadyExists) {
+        return response.status(400).json({
+          error: "User not found",
+        });
+      }
+
+      const sale = saleRepository.create({
+        costumer,
+        admin_id: adminAlreadyExists.id,
+        value: value,
+      });
+
+      let id_sale
+
+      manager.save(id_sale = await saleRepository.save(sale));
+
+      for (const product of products) {
+        try {
+          await spController.create(product as any, id_sale);
+        } catch (error) {
+          throw new Error("Erro de Transação" + error.message);
+        }
+      }
+
+      return response.status(200).json(sale);
+    } catch (error) {
+      return response
+        .status(400)
+        .json("erro no sale controller" + error.message);
+    }
   }
 
   /**
