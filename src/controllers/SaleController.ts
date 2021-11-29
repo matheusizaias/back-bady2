@@ -81,7 +81,7 @@ class SaleController {
 
     } catch (error) {
       await queryRunner.rollbackTransaction();
-      return response.status(400).json(error.message)
+      return response.status(400).json('erro no sale controller' + error.message)
     }
   }
 
