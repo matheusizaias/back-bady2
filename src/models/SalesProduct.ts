@@ -7,6 +7,7 @@ import {
   } from "typeorm";
 import Product from "./Products";
 import Sales from "./Sales";
+import { v4 as uuid } from "uuid";
 
   
   @Entity("sales_products_product")
@@ -40,6 +41,12 @@ import Sales from "./Sales";
     referencedColumnName: "id_product"}
     )
     product:Product;
+
+    constructor() {
+      if (!this.spId) {
+        this.spId = uuid();
+      }
+    }
 
   }
   
