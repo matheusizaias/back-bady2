@@ -54,7 +54,6 @@ class SaleProductController {
       }else if (!product) {
         await queryRunner.rollbackTransaction();
         throw new Error("Product doesn't exists");
-
       } else if (p.amount > product.amount) {
         await queryRunner.rollbackTransaction();
         throw new Error("Amount greater than stock");
@@ -81,7 +80,7 @@ class SaleProductController {
 
     } catch (error) {
       //await queryRunner.rollbackTransaction();
-      return console.log(error.message)
+      throw new Error("Erro no Sale Product" + error.message)
     }
   }
 
