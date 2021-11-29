@@ -1,9 +1,11 @@
 import { Request, Response } from 'express';
-import { getCustomRepository } from 'typeorm';
+import { getConnection, getCustomRepository } from 'typeorm';
+import Product from '../models/Products';
 import { AdminRepository } from '../repositories/AdminRespository';
 import { SaleProductRepository } from '../repositories/SaleProductRepository';
 import { SaleRepository } from '../repositories/SaleRepository';
 import saleView from '../views/saleView';
+import { SaleProductController } from './SaleProductController';
 
 interface SaleProps {
   id_sale: string;
@@ -11,6 +13,7 @@ interface SaleProps {
   value: string;
   costumer: string;
   amount: number;
+  product: Product[]
 }
 
 
@@ -19,7 +22,7 @@ class SaleController {
    * Method to create a sale
    */
   async create(request: Request, response: Response) {
-    const { admin_id, costumer} = request.body as SaleProps
+    const { admin_id, costumer, product} = request.body as SaleProps
 
     const [saleRepository, adminRepository, saleProductRepository] = await Promise.all([
       getCustomRepository(SaleRepository),
@@ -27,7 +30,16 @@ class SaleController {
       getCustomRepository(SaleProductRepository)
     ])
 
+    const spController = new SaleProductController();
+
     const adminAlreadyExists = await adminRepository.findOne({ id: admin_id });
+
+    const connection = getConnection();
+    const queryRunner = connection.createQueryRunner();
+
+    await queryRunner.connect();
+
+    await queryRunner.startTransaction();
 
     try {
       
@@ -44,11 +56,17 @@ class SaleController {
 
       await saleRepository.save(sale);
 
-      saleProductRepository.create()
+
+      for(const p of product)
+      {
+        spController.create(request, response, p);
+      }
+      
 
       return response.status(200).json(sale);
 
     } catch (error) {
+      await queryRunner.rollbackTransaction();
       return response.status(400).json(error.message)
     }
   }

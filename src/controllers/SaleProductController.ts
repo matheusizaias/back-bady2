@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
-import { getCustomRepository } from 'typeorm';
+import { getConnection, getCustomRepository } from 'typeorm';
+import Product from '../models/Products';
 import { ProductRepository } from '../repositories/ProductRepository';
 import { SaleProductRepository } from '../repositories/SaleProductRepository';
 import { SaleRepository } from '../repositories/SaleRepository';
@@ -23,7 +24,7 @@ class SaleProductController {
   /**
    * Method to create a sale
    */
-  async create(request: Request, response: Response) {
+  async create(request: Request, response: Response, p: Product) {
     const { id_sale, id_product, qtd, price} = request.body as SaleProduct
 
     const [saleRepository, productRepository, saleProductRepository] = await Promise.all([
@@ -31,6 +32,11 @@ class SaleProductController {
       getCustomRepository(ProductRepository),
       getCustomRepository(SaleProductRepository)
     ])
+
+    const connection = getConnection();
+    const queryRunner = connection.createQueryRunner();
+
+    await queryRunner.connect();
 
     let total = 0
 
@@ -43,11 +49,14 @@ class SaleProductController {
       
       if(!sale)
       {
+        await queryRunner.rollbackTransaction();
         throw new Error("Sale doesn't exists");
       }else if (!product) {
+        await queryRunner.rollbackTransaction();
         throw new Error("Product doesn't exists");
 
       } else if (qtd > product.amount) {
+        await queryRunner.rollbackTransaction();
         throw new Error("Amount greater than stock");
       }else{
         product.amount = product.amount - qtd
@@ -58,7 +67,7 @@ class SaleProductController {
 
       const saleProduct = await saleProductRepository.create({
         salesIdSale: id_sale,
-        productIdProduct: id_product,
+        productIdProduct: p.id_product,
         qtd: qtd,
         price: price,
         total: total
@@ -66,9 +75,12 @@ class SaleProductController {
 
       await saleProductRepository.save(saleProduct);
 
+      await queryRunner.commitTransaction();
+
       return response.status(200).json(saleProduct);
 
     } catch (error) {
+      await queryRunner.rollbackTransaction();
       return response.status(400).json(error.message)
     }
   }
