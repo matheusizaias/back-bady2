@@ -21,7 +21,6 @@ class SaleController {
   /**
    * Method to create a sale
    */
-  @Transaction()
   async create(request: Request, response: Response) {
     const {
       admin_id,
@@ -40,7 +39,7 @@ class SaleController {
 
     const adminAlreadyExists = await adminRepository.findOne({ id: admin_id });
 
-    // getConnection().transaction(async )
+    // getConnection().transaction()
 
     try {
       let value = 0;
