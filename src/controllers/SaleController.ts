@@ -30,7 +30,6 @@ class SaleController {
   /**
    * Method to create a sale
    */
-  @Transaction()
   async create(request: Request, response: Response) {
     const {
       admin_id,
@@ -48,6 +47,12 @@ class SaleController {
     const spController = new SaleProductController();
 
     const adminAlreadyExists = await adminRepository.findOne({ id: admin_id });
+
+    const connection = getConnection();
+    const queryRunner = connection.createQueryRunner();
+    await queryRunner.connect();
+
+    await queryRunner.startTransaction();
 
     try {
       let value = 0;
@@ -68,9 +73,9 @@ class SaleController {
         value: value,
       });
 
-      let id_sale
+      let id_sale;
 
-      getConnection().createEntityManager().save(id_sale = await saleRepository.save(sale));
+      queryRunner.manager.save((id_sale = await saleRepository.save(sale)));
 
       for (const product of products) {
         try {
@@ -80,8 +85,11 @@ class SaleController {
         }
       }
 
+      await queryRunner.commitTransaction();
+
       return response.status(200).json(sale);
     } catch (error) {
+      await queryRunner.rollbackTransaction();
       return response
         .status(400)
         .json("erro no sale controller" + error.message);
