@@ -65,14 +65,18 @@ class SaleController {
 
       const id_sale = await saleRepository.save(sale);
 
-
-      for(const product of products)
+      try
       {
-        await spController.create(product as any, id_sale);
-      }
+        for(const product of products)
+        {
+          await spController.create(product as any, id_sale);
+        }
 
-      await queryRunner.commitTransaction();
-      
+        await queryRunner.commitTransaction();
+      }catch(error)
+      {
+        throw new Error("Erro de Transação" + error.message);
+      }
 
       return response.status(200).json(sale);
 

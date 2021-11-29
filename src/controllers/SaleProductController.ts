@@ -33,11 +33,6 @@ class SaleProductController {
       getCustomRepository(SaleProductRepository)
     ])
 
-    const connection = getConnection();
-    const queryRunner = connection.createQueryRunner();
-
-    await queryRunner.connect();
-
     let total = 0
 
     try {
@@ -49,13 +44,10 @@ class SaleProductController {
       
       if(!sale)
       {
-        await queryRunner.rollbackTransaction();
         throw new Error("Sale doesn't exists");
       }else if (!product) {
-        await queryRunner.rollbackTransaction();
         throw new Error("Product doesn't exists");
       } else if (p.amount > product.amount) {
-        await queryRunner.rollbackTransaction();
         throw new Error("Amount greater than stock");
       }else{
         product.amount = product.amount - p.amount
