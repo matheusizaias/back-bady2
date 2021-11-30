@@ -28,6 +28,8 @@ router.post("/session", adminController.authenticate);
  
 router.get("/show-admin", adminController.show);
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+//@ts-ignore
 router.post("/new-sale", saleController.create);
 router.get("/show-sales", saleController.show);
 router.get("/show-order-sales", saleController.showSaleByTime);
