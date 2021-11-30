@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { getConnection, getCustomRepository } from "typeorm";
 import Products from "../models/Products";
 import Sales from "../models/Sales";
+import SalesProduct from "../models/SalesProduct";
 import { ProductRepository } from "../repositories/ProductRepository";
 import { SaleProductRepository } from "../repositories/SaleProductRepository";
 import { SaleRepository } from "../repositories/SaleRepository";
@@ -77,27 +78,27 @@ class SaleProductController {
     const saleProductRepository = getCustomRepository(SaleProductRepository);
     const salesProduct = await saleProductRepository.find();
 
+    // const produto = this.showProductName(salesProduct)
+
     return response.json(saleProductView.renderMany(salesProduct));
   }
 
-  async showProductName(request: Request, response: Response) {
+  // async showProductName(salesP: SalesProduct[]) {
 
-    const saleProductRepository = getCustomRepository(SaleProductRepository);
-    const productRepository = getCustomRepository(ProductRepository);
-    const salesProduct = await saleProductRepository.find();
+  //   const productRepository = getCustomRepository(ProductRepository);
 
-    let salep
+  //   let salep
 
-    for(const sp of salesProduct)
-    {
-      const produto = await productRepository.find({id_product: sp.productIdProduct})
+  //   for(const sp of salesP)
+  //   {
+  //     const produto = await productRepository.find({id_product: sp.productIdProduct})
 
-      salep.push(produto);
-    }
+  //     salep.push(produto);
+  //   }
 
-    return response.json(productView.renderMany(salep));
+  //   return salep;
 
-  }
+  // }
 }
 
 export { SaleProductController };
