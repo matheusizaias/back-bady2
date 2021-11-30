@@ -73,26 +73,10 @@ class SaleProductController {
 
   async show(request: Request, response: Response) {
 
-    const [saleRepository, productRepository, saleProductRepository] =
-      await Promise.all([
-        getCustomRepository(SaleRepository),
-        getCustomRepository(ProductRepository),
-        getCustomRepository(SaleProductRepository),
-      ]);
+    const saleProductRepository = getCustomRepository(SaleProductRepository);
+    const salesProduct = await saleProductRepository.find();
 
-    const {products} = request.body
-
-    let produtos: Products[]
-
-    for(const product of products)
-    {
-      const produto = await productRepository.findOne({id_product: product.id});
-
-      produtos.push(produto);
-    }
-    // const salesProduct = await saleProductRepository.find();
-
-    return response.json(productView.renderMany(produtos));
+    return response.json(saleProductView.renderMany(salesProduct));
   }
 }
 
