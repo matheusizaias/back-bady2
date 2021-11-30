@@ -4,7 +4,7 @@ import Sales from '../models/Sales';
 import { ProductRepository } from '../repositories/ProductRepository';
 import { SaleProductRepository } from '../repositories/SaleProductRepository';
 import { SaleRepository } from '../repositories/SaleRepository';
-import saleView from '../views/saleView';
+import saleProductView from '../views/saleProductView';
 
 interface SaleProduct {
   id_sale: string;
@@ -75,10 +75,10 @@ class SaleProductController {
   
 
   async show(request: Request, response: Response) {
-    const salesRepository = getCustomRepository(SaleRepository);
-    const sales = await salesRepository.find();
+    const saleProductRepository = getCustomRepository(SaleProductRepository);
+    const salesProduct = await saleProductRepository.find();
 
-    return response.json(saleView.renderMany(sales));
+    return response.json(saleProductView.renderMany(salesProduct));
   }
 
   
