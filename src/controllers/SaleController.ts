@@ -30,7 +30,6 @@ class SaleController {
   /**
    * Method to create a sale
    */
-  @Transaction()
   async create(request: Request, response: Response, @TransactionRepository(SaleRepository) saleRepository: Repository<Sales>) {
     const {
       admin_id,
