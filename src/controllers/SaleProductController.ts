@@ -22,6 +22,7 @@ type Product = {
   price: number;
 };
 
+
 class SaleProductController {
   /**
    * Method to create a sale
@@ -77,6 +78,25 @@ class SaleProductController {
     const salesProduct = await saleProductRepository.find();
 
     return response.json(saleProductView.renderMany(salesProduct));
+  }
+
+  async showProductName(request: Request, response: Response) {
+
+    const saleProductRepository = getCustomRepository(SaleProductRepository);
+    const productRepository = getCustomRepository(ProductRepository);
+    const salesProduct = await saleProductRepository.find();
+
+    let salep
+
+    for(const sp of salesProduct)
+    {
+      const produto = await productRepository.find({id_product: sp.productIdProduct})
+
+      salep.push(produto);
+    }
+
+    return response.json(productView.renderMany(salep));
+
   }
 }
 
