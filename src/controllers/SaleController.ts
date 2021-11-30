@@ -30,29 +30,29 @@ class SaleController {
   /**
    * Method to create a sale
    */
-  async create(request: Request, response: Response) {
+  async create(request: Request, response: Response, @TransactionRepository(SaleRepository) saleRepository: Repository<Sales>) {
     const {
       admin_id,
       costumer,
       id_product: products,
     } = request.body as SaleProps;
 
-    const [saleRepository, adminRepository, saleProductRepository] =
+    const [/*saleRepository*/ adminRepository, saleProductRepository] =
       await Promise.all([
-        getCustomRepository(SaleRepository),
+        /*getCustomRepository(SaleRepository)*/
         getCustomRepository(AdminRepository),
-        getCustomRepository(SaleProductRepository),
+        getCustomRepository(SaleProductRepository)
       ]);
 
     const spController = new SaleProductController();
 
     const adminAlreadyExists = await adminRepository.findOne({ id: admin_id });
 
-    const connection = getConnection();
-    const queryRunner = connection.createQueryRunner();
-    await queryRunner.connect();
+    // const connection = getConnection();
+    // const queryRunner = connection.createQueryRunner();
+    // await queryRunner.connect();
 
-    await queryRunner.startTransaction();
+    // await queryRunner.startTransaction();
 
     try {
       let value = 0;
@@ -73,9 +73,9 @@ class SaleController {
         value: value,
       });
 
-      let id_sale;
+      // let id_sale;
 
-      queryRunner.manager.save((id_sale = await saleRepository.save(sale)));
+      const id_sale = await saleRepository.save(sale);
 
       for (const product of products) {
         try {
@@ -85,11 +85,11 @@ class SaleController {
         }
       }
 
-      await queryRunner.commitTransaction();
+      // await queryRunner.commitTransaction();
 
       return response.status(200).json(sale);
     } catch (error) {
-      await queryRunner.rollbackTransaction();
+      // await queryRunner.rollbackTransaction();
       return response
         .status(400)
         .json("erro no sale controller" + error.message);
