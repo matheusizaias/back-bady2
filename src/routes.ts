@@ -39,7 +39,7 @@ router.get("/show-sales-by-constumer/:costumer", saleController.showSaleByCostum
 // router.get("/count-delivered", saleController.countDeliverdeSales);
 
 //router.post("/new-saleProduct,", saleProductController.create);
-router.get("/show-sale-product", saleProductController.show);
+router.get("/show-sale-product/:id", saleProductController.show);
 
 router.post("/new-category", categoryController.create);
 router.get("/show-category", categoryController.show);

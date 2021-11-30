@@ -1,10 +1,12 @@
-import { Request, Response } from 'express';
-import { getConnection, getCustomRepository } from 'typeorm';
-import Sales from '../models/Sales';
-import { ProductRepository } from '../repositories/ProductRepository';
-import { SaleProductRepository } from '../repositories/SaleProductRepository';
-import { SaleRepository } from '../repositories/SaleRepository';
-import saleProductView from '../views/saleProductView';
+import { Request, Response } from "express";
+import { getConnection, getCustomRepository } from "typeorm";
+import Products from "../models/Products";
+import Sales from "../models/Sales";
+import { ProductRepository } from "../repositories/ProductRepository";
+import { SaleProductRepository } from "../repositories/SaleProductRepository";
+import { SaleRepository } from "../repositories/SaleRepository";
+import productView from "../views/productView";
+import saleProductView from "../views/saleProductView";
 
 interface SaleProduct {
   id_sale: string;
@@ -17,8 +19,8 @@ interface SaleProduct {
 type Product = {
   id: string;
   amount: number;
-  price: number
-}
+  price: number;
+};
 
 class SaleProductController {
   /**
@@ -27,29 +29,27 @@ class SaleProductController {
   async create(p: Product, id_sale: Sales) {
     //const { id_sale, id_product, qtd, price} = request.body as SaleProduct
 
-    const [saleRepository, productRepository, saleProductRepository] = await Promise.all([
-      getCustomRepository(SaleRepository),
-      getCustomRepository(ProductRepository),
-      getCustomRepository(SaleProductRepository)
-    ])
+    const [saleRepository, productRepository, saleProductRepository] =
+      await Promise.all([
+        getCustomRepository(SaleRepository),
+        getCustomRepository(ProductRepository),
+        getCustomRepository(SaleProductRepository),
+      ]);
 
     try {
+      const product = await productRepository.findOne({ id_product: p.id });
 
+      const sale = await saleRepository.findOne({ id_sale: id_sale.id_sale });
 
-      const product = await productRepository.findOne({id_product: p.id});
-
-      const sale = await saleRepository.findOne({id_sale: id_sale.id_sale});
-      
-      if(!sale)
-      {
+      if (!sale) {
         throw new Error("Sale doesn't exists");
-      }else if (!product) {
+      } else if (!product) {
         throw new Error("Product doesn't exists");
       } else if (p.amount > product.amount) {
         throw new Error("Amount greater than stock");
-      }else{
-        product.amount = product.amount - p.amount
-        productRepository.save({ ...product });     
+      } else {
+        product.amount = product.amount - p.amount;
+        productRepository.save({ ...product });
       }
 
       const saleProduct = saleProductRepository.create({
@@ -57,7 +57,7 @@ class SaleProductController {
         productIdProduct: p.id,
         qtd: p.amount,
         price: p.price / p.amount,
-        total: p.price
+        total: p.price,
       });
 
       await saleProductRepository.save(saleProduct);
@@ -65,25 +65,35 @@ class SaleProductController {
       //await queryRunner.commitTransaction();
 
       // return response.status(200).json(saleProduct);
-
     } catch (error) {
       //await queryRunner.rollbackTransaction();
-      throw new Error("Erro no Sale Product" + error.message)
+      throw new Error("Erro no Sale Product" + error.message);
     }
   }
 
-  
-
   async show(request: Request, response: Response) {
-    const saleProductRepository = getCustomRepository(SaleProductRepository);
-    const salesProduct = await saleProductRepository.find();
 
-    return response.json(saleProductView.renderMany(salesProduct));
+    const [saleRepository, productRepository, saleProductRepository] =
+      await Promise.all([
+        getCustomRepository(SaleRepository),
+        getCustomRepository(ProductRepository),
+        getCustomRepository(SaleProductRepository),
+      ]);
+
+    const {products} = request.body
+
+    let produtos: Products[]
+
+    for(const product of products)
+    {
+      const produto = await productRepository.findOne({id_product: product.id});
+
+      produtos.push(produto);
+    }
+    // const salesProduct = await saleProductRepository.find();
+
+    return response.json(productView.renderMany(produtos));
   }
-
-  
 }
- 
 
 export { SaleProductController };
-
