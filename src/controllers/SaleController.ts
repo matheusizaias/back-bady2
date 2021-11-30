@@ -30,16 +30,16 @@ class SaleController {
   /**
    * Method to create a sale
    */
-  async create(request: Request, response: Response, @TransactionRepository(SaleRepository) saleRepository: Repository<Sales>) {
+  async create(request: Request, response: Response) {
     const {
       admin_id,
       costumer,
       id_product: products,
     } = request.body as SaleProps;
 
-    const [/*saleRepository*/ adminRepository, saleProductRepository] =
+    const [saleRepository, adminRepository, saleProductRepository] =
       await Promise.all([
-        /*getCustomRepository(SaleRepository)*/
+        getCustomRepository(SaleRepository),
         getCustomRepository(AdminRepository),
         getCustomRepository(SaleProductRepository)
       ]);
