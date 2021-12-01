@@ -83,22 +83,45 @@ class SaleProductController {
     return response.json(saleProductView.renderMany(salesProduct));
   }
 
-  // async showProductName(salesP: SalesProduct[]) {
+  async showQtdSomada(request: Request, response: Response) {
 
-  //   const productRepository = getCustomRepository(ProductRepository);
+    const saleProductRepository = getCustomRepository(SaleProductRepository);
+    const salesProduct = await saleProductRepository.find({});
+    const salesProductF = []
 
-  //   let salep
+    for(const sp of salesProduct)
+    {
+      let cont = 0;
+      if (salesProductF == []) {
+        salesProductF.push(sp)
+        cont = 1;
+      } else {
+        for (const sp2 of salesProduct)
+        {
+          if(sp.productIdProduct == sp2.productIdProduct)
+          {
+            cont = 1;
+          }
+        }
+      }
+      if (cont == 0) {
+        salesProductF.push(sp);
+      }
+    }
 
-  //   for(const sp of salesP)
-  //   {
-  //     const produto = await productRepository.find({id_product: sp.productIdProduct})
+    for (let i = 1; i < salesProduct.length; i++) {
+      for (let j = 0; j < salesProductF.length; j++) {
+        if (salesProduct[i].productIdProduct == salesProductF[j].product_id) {
+          salesProductF[j].qtd += salesProduct[i].qtd;
+        }
+      }
+    }
 
-  //     salep.push(produto);
-  //   }
+    return response.json(saleProductView.renderMany(salesProductF));
+  }
 
-  //   return salep;
-
-  // }
+  
 }
+
 
 export { SaleProductController };
