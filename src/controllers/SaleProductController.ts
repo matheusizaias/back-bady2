@@ -83,42 +83,42 @@ class SaleProductController {
     return response.json(saleProductView.renderMany(salesProduct));
   }
 
-  async showQtdSomada(request: Request, response: Response) {
+  // async showQtdSomada(request: Request, response: Response) {
 
-    const saleProductRepository = getCustomRepository(SaleProductRepository);
-    const salesProduct = await saleProductRepository.find({});
-    const salesProductF = []
+  //   const saleProductRepository = getCustomRepository(SaleProductRepository);
+  //   const salesProduct = await saleProductRepository.find({});
+  //   const salesProductF = []
 
-    for(const sp of salesProduct)
-    {
-      let cont = 0;
-      if (salesProductF == []) {
-        salesProductF.push(sp)
-        cont = 1;
-      } else {
-        for (const sp2 of salesProduct)
-        {
-          if(sp.productIdProduct == sp2.productIdProduct)
-          {
-            cont = 1;
-          }
-        }
-      }
-      if (cont == 0) {
-        salesProductF.push(sp);
-      }
-    }
+  //   for(const sp of salesProduct)
+  //   {
+  //     let cont = 0;
+  //     if (salesProductF == []) {
+  //       salesProductF.push(sp)
+  //       cont = 1;
+  //     } else {
+  //       for (const sp2 of salesProduct)
+  //       {
+  //         if(sp.productIdProduct == sp2.productIdProduct)
+  //         {
+  //           cont = 1;
+  //         }
+  //       }
+  //     }
+  //     if (cont == 0) {
+  //       salesProductF.push(sp);
+  //     }
+  //   }
 
-    for (let i = 1; i < salesProduct.length; i++) {
-      for (let j = 0; j < salesProductF.length; j++) {
-        if (salesProduct[i].productIdProduct == salesProductF[j].product_id) {
-          salesProductF[j].qtd += salesProduct[i].qtd;
-        }
-      }
-    }
+  //   for (let i = 1; i < salesProduct.length; i++) {
+  //     for (let j = 0; j < salesProductF.length; j++) {
+  //       if (salesProduct[i].productIdProduct == salesProductF[j].product_id) {
+  //         salesProductF[j].qtd += salesProduct[i].qtd;
+  //       }
+  //     }
+  //   }
 
-    return response.json(saleProductView.renderMany(salesProductF));
-  }
+  //   return response.json(saleProductView.renderMany(salesProductF));
+  // }
 
   
 }
