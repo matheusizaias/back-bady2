@@ -94,7 +94,7 @@ class SaleProductController {
       }
     );
 
-    let aux = "";
+    // let aux = "";
 
     for (const sp of salesProduct) {
       const product = await productRepository.findOne({
@@ -125,13 +125,12 @@ class SaleProductController {
       //   spShow
       // }
 
-      if(product.id_product == aux)
-      {
-        sp.price += product.price;
-        sp.qtd += product.amount;
-      }
+      // if(product.id_product == aux)
+      // {
+      //   sp.qtd += product.amount;
+      // }
 
-      aux = product.id_product;
+      // aux = product.id_product;
 
     // for (let i = 1; i < salesProduct.length; i++) {
     //   for (let j = 0; j < salesProductF.length; j++) {
