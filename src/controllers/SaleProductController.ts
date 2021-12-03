@@ -88,9 +88,11 @@ class SaleProductController {
         getCustomRepository(SaleProductRepository),
       ]);
 
-    const salesProduct = await saleProductRepository.find();
-
-    let spShow: SalesProduct[];
+    const salesProduct = await saleProductRepository.find(
+      {
+        order: {qtd: "DESC"}
+      }
+    );
 
     // let aux = "";
 
