@@ -95,12 +95,14 @@ class SaleProductController {
         id_product: sp.productIdProduct,
       });
 
-      let cont = 0;
+      spShow.push(sp);
 
-      if (spShow.length == 0) {
-        spShow.push(sp);
-        cont = 1;
-      }
+      // let cont = 0;
+
+      // if (spShow.length == 0) {
+      //   spShow.push(sp);
+      //   cont = 1;
+      // }
       // } else {
       //   for (const j of spShow) {
       //     if (product.id_product == j.productIdProduct) {
@@ -108,9 +110,9 @@ class SaleProductController {
       //     }
       //   }
       // }
-      if (cont == 0) {
-        spShow.push(sp);
-      }
+      // if (cont == 0) {
+      //   spShow.push(sp);
+      // }
 
       // if(spShow != null)
       // {
