@@ -136,7 +136,7 @@ class SaleProductController {
     //   }
     // }
 
-    return response.json(saleProductView.renderMany(spShow));
+    return response.json(saleProductView.renderMany(salesProduct));
   }
 }
 
