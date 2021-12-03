@@ -7,7 +7,8 @@ export default {
       productIdProduct: salesProduct.productIdProduct,
       qtd: salesProduct.qtd,
       price: salesProduct.price,
-      total: salesProduct.total
+      total: salesProduct.total,
+      createdAt: salesProduct.sale.created_at
     }
   },
   renderMany(salesProduct: SalesProduct[]) {

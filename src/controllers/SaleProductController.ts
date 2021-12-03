@@ -89,7 +89,9 @@ class SaleProductController {
 
     const salesProduct = await saleProductRepository.find(
       {
-        relations:["sales"],
+        join: {
+          alias: "sales",
+        },
         order: {qtd: "DESC"}
       }
     );
