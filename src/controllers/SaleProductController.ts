@@ -82,14 +82,18 @@ class SaleProductController {
   }
 
   async showRelatory(request: Request, response: Response) {
-    const [productRepository, saleProductRepository] =
+    const [saleProductRepository] =
       await Promise.all([
-        getCustomRepository(ProductRepository),
         getCustomRepository(SaleProductRepository),
       ]);
 
     const salesProduct = await saleProductRepository.find(
       {
+        join: {
+          alias: "sales",
+          leftJoin:{
+          }
+        },
         order: {qtd: "DESC"}
       }
     );
