@@ -102,7 +102,7 @@ class SaleProductController {
 
       for (let i = 0; i < salesProduct.length; i++)
       {
-        if(spShow == [])
+        if(spShow.length == 0)
         {
           spShow.push(sp)
           cont = 1
