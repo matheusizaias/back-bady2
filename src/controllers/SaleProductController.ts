@@ -84,7 +84,7 @@ class SaleProductController {
   async showRelatory(request: Request, response: Response) {
     const saleProductRepository = getCustomRepository(SaleProductRepository);
     const productRepository = getCustomRepository(ProductRepository);
-    const salesProduct = await saleProductRepository.find({});
+    const salesProduct = await saleProductRepository.find();
 
     let spShow: SalesProduct[];
 
@@ -136,7 +136,7 @@ class SaleProductController {
     //   }
     // }
 
-    return response.json(saleProductView.renderMany(salesProduct));
+    return response.json(saleProductView.renderMany(spShow));
   }
 }
 
