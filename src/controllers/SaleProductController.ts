@@ -99,7 +99,7 @@ class SaleProductController {
         id_product: sp.productIdProduct,
       });
 
-    //   spShow.push(sp);
+      spShow.push(sp);
 
       // let cont = 0;
 
@@ -140,7 +140,7 @@ class SaleProductController {
     //   }
     }
 
-    return response.json(saleProductView.renderMany(salesProduct));
+    return response.json(saleProductView.renderMany(spShow));
   }
 }
 
