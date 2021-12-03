@@ -82,21 +82,22 @@ class SaleProductController {
   }
 
   async showRelatory(request: Request, response: Response) {
-    const saleProductRepository = getCustomRepository(SaleProductRepository);
+    const [productRepository, saleProductRepository] =
+      await Promise.all([
+        getCustomRepository(ProductRepository),
+        getCustomRepository(SaleProductRepository),
+      ]);
+
     const salesProduct = await saleProductRepository.find();
 
-    // const produto = this.showProductName(salesProduct)
-
-    return response.json(saleProductView.renderMany(salesProduct));
-
-    // let spShow: SalesProduct[];
+    let spShow: SalesProduct[];
 
     // let aux = "";
 
-    // for (const sp of salesProduct) {
-    //   const product = await productRepository.findOne({
-    //     id_product: sp.productIdProduct,
-    //   });
+    for (const sp of salesProduct) {
+      const product = await productRepository.findOne({
+        id_product: sp.productIdProduct,
+      });
 
     //   spShow.push(sp);
 
@@ -137,9 +138,9 @@ class SaleProductController {
     //       salesProductF[j].qtd += salesProduct[i].qtd;
     //     }
     //   }
-    // }
+    }
 
-    // return response.json(saleProductView.renderMany(salesProduct));
+    return response.json(saleProductView.renderMany(salesProduct));
   }
 }
 
