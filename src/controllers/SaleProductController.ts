@@ -90,16 +90,16 @@ class SaleProductController {
 
     const salesProduct = await saleProductRepository.find();
 
-    let spShow: SalesProduct[];
+    // let spShow: SalesProduct[];
 
     // let aux = "";
 
-    for (const sp of salesProduct) {
-      const product = await productRepository.findOne({
-        id_product: sp.productIdProduct,
-      });
+    // for (const sp of salesProduct) {
+    //   const product = await productRepository.findOne({
+    //     id_product: sp.productIdProduct,
+    //   });
 
-      spShow.push(sp);
+    //   spShow.push(sp);
 
       // let cont = 0;
 
@@ -138,9 +138,9 @@ class SaleProductController {
     //       salesProductF[j].qtd += salesProduct[i].qtd;
     //     }
     //   }
-    }
+    // }
 
-    return response.status(200).json(saleProductView.renderMany(spShow));
+    return response.status(200).json(saleProductView.renderMany(salesProduct));
   }
 }
 
