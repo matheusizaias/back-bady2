@@ -90,7 +90,7 @@ class SaleProductController {
 
     const salesProduct = await saleProductRepository.find();
 
-    // let spShow: SalesProduct[];
+    let spShow: SalesProduct[];
 
     // let aux = "";
 
