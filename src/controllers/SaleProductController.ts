@@ -100,13 +100,14 @@ class SaleProductController {
       if (spShow.length == 0) {
         spShow.push(sp);
         cont = 1;
-      } else {
-        for (const j of spShow) {
-          if (product.id_product == j.productIdProduct) {
-            cont = 1;
-          }
-        }
       }
+      // } else {
+      //   for (const j of spShow) {
+      //     if (product.id_product == j.productIdProduct) {
+      //       cont = 1;
+      //     }
+      //   }
+      // }
       if (cont == 0) {
         spShow.push(sp);
       }
