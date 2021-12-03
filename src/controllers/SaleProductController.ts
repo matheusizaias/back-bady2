@@ -83,19 +83,22 @@ class SaleProductController {
 
   async showRelatory(request: Request, response: Response) {
     const saleProductRepository = getCustomRepository(SaleProductRepository);
-    const productRepository = getCustomRepository(ProductRepository);
     const salesProduct = await saleProductRepository.find();
 
-    let spShow: SalesProduct[];
+    // const produto = this.showProductName(salesProduct)
+
+    return response.json(saleProductView.renderMany(salesProduct));
+
+    // let spShow: SalesProduct[];
 
     // let aux = "";
 
-    for (const sp of salesProduct) {
-      const product = await productRepository.findOne({
-        id_product: sp.productIdProduct,
-      });
+    // for (const sp of salesProduct) {
+    //   const product = await productRepository.findOne({
+    //     id_product: sp.productIdProduct,
+    //   });
 
-      spShow.push(sp);
+    //   spShow.push(sp);
 
       // let cont = 0;
 
@@ -126,7 +129,7 @@ class SaleProductController {
       // }
 
       // aux = product.id_product;
-    }
+    // }
 
     // for (let i = 1; i < salesProduct.length; i++) {
     //   for (let j = 0; j < salesProductF.length; j++) {
@@ -136,7 +139,7 @@ class SaleProductController {
     //   }
     // }
 
-    return response.json(saleProductView.renderMany(salesProduct));
+    // return response.json(saleProductView.renderMany(salesProduct));
   }
 }
 
