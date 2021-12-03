@@ -140,7 +140,7 @@ class SaleProductController {
     //   }
     }
 
-    return response.json(saleProductView.renderMany(spShow));
+    return response.status(200).json(saleProductView.renderMany(spShow));
   }
 }
 
