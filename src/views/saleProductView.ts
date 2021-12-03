@@ -8,7 +8,7 @@ export default {
       qtd: salesProduct.qtd,
       price: salesProduct.price,
       total: salesProduct.total,
-      createdAt: salesProduct.sale.created_at
+      // createdAt: salesProduct.sale.created_at
     }
   },
   renderMany(salesProduct: SalesProduct[]) {
