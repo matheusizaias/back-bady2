@@ -104,7 +104,7 @@ class SaleProductController {
       {
         if(spShow == null)
         {
-          spShow.push(sp[i])
+          spShow.push(sp)
           cont = 1
         }else{
           for(let j = 0; j < spShow.length; j++)
@@ -117,7 +117,7 @@ class SaleProductController {
         }
         if(cont == 0)
         {
-          spShow.push(sp[i])
+          spShow.push(sp)
         }
       }
 
