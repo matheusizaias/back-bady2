@@ -98,31 +98,15 @@ class SaleProductController {
 
     
 
-    for (const sp of salesProduct) {
-      const spProduct = await saleProductRepository.findOne({
-        productIdProduct: sp.productIdProduct,
-      });
-
-      // let aux = "";
+    for (let i = 0;  i < salesProduct.length; i++) {
 
       for(let j = 0; j < salesProduct.length; j++)
       {
-        if(sp.productIdProduct == aux[j].productIdProduct && sp.salesIdSale != aux[j].salesIdSale)
+        if(salesProduct[i].productIdProduct == aux[j].productIdProduct && salesProduct[i].salesIdSale != aux[j].salesIdSale)
         {
-          salesProduct[j].qtd += spProduct.qtd;
+          salesProduct[i].qtd += aux[j].qtd;
         }
       }
-
-      
-
-      
-
-    // for (let i = 1; i < salesProduct.length; i++) {
-    //   for (let j = 0; j < salesProductF.length; j++) {
-    //     if (salesProduct[i].productIdProduct == salesProductF[j].product_id) {
-    //       salesProductF[j].qtd += salesProduct[i].qtd;
-    //     }
-    //   }
     }
 
     return response.status(200).json(saleProductView.renderMany(salesProduct));
