@@ -23,7 +23,6 @@ type Product = {
   price: number;
 };
 
-
 class SaleProductController {
   /**
    * Method to create a sale
@@ -74,7 +73,6 @@ class SaleProductController {
   }
 
   async show(request: Request, response: Response) {
-
     const saleProductRepository = getCustomRepository(SaleProductRepository);
     const salesProduct = await saleProductRepository.find();
 
@@ -84,7 +82,6 @@ class SaleProductController {
   }
 
   async showRelatory(request: Request, response: Response) {
-
     const saleProductRepository = getCustomRepository(SaleProductRepository);
     const productRepository = getCustomRepository(ProductRepository);
     const salesProduct = await saleProductRepository.find({});
@@ -93,32 +90,25 @@ class SaleProductController {
 
     // let aux = "";
 
-    for(const sp of salesProduct)
-    {
-
-      const product = await productRepository.findOne({id_product:sp.productIdProduct})
+    for (const sp of salesProduct) {
+      const product = await productRepository.findOne({
+        id_product: sp.productIdProduct,
+      });
 
       let cont = 0;
 
-      for (let i = 0; i < salesProduct.length; i++)
-      {
-        if(spShow.length == 0)
-        {
-          spShow.push(sp)
-          cont = 1
-        }else{
-          for(let j = 0; j < spShow.length; j++)
-          {
-            if(product.id_product == spShow[j].productIdProduct)
-            {
-              cont = 1;
-            }
+      if (spShow.length == 0) {
+        spShow.push(sp);
+        cont = 1;
+      } else {
+        for (const j of spShow) {
+          if (product.id_product == j.productIdProduct) {
+            cont = 1;
           }
         }
-        if(cont == 0)
-        {
-          spShow.push(sp)
-        }
+      }
+      if (cont == 0) {
+        spShow.push(sp);
       }
 
       // if(spShow != null)
@@ -133,7 +123,6 @@ class SaleProductController {
       // }
 
       // aux = product.id_product;
-      
     }
 
     // for (let i = 1; i < salesProduct.length; i++) {
@@ -146,9 +135,6 @@ class SaleProductController {
 
     return response.json(saleProductView.renderMany(spShow));
   }
-
-  
 }
-
 
 export { SaleProductController };
