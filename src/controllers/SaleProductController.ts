@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { getConnection, getCustomRepository, IsNull } from "typeorm";
+import { Equal, getConnection, getCustomRepository, IsNull, Not } from "typeorm";
 import Products from "../models/Products";
 import Sales from "../models/Sales";
 import SalesProduct from "../models/SalesProduct";
@@ -94,19 +94,19 @@ class SaleProductController {
       }
     );
 
-    // let aux = "";
+    let aux = "";
 
     for (const sp of salesProduct) {
       const product = await productRepository.findOne({
         id_product: sp.productIdProduct,
       });
 
-    //   spShow.push(sp);
+    
 
       // let cont = 0;
 
       // if (spShow.length == 0) {
-      //   spShow.push(sp);
+      
       //   cont = 1;
       // }
       // } else {
@@ -125,14 +125,13 @@ class SaleProductController {
       //   spShow
       // }
 
-      // if(product.id_product == aux)
-      // {
-      //   spShow.price += product.price;
-      //   spShow.qtd += product.amount;
-      // }
+      if(product.id_product == aux)
+      {
+        sp.price += product.price;
+        sp.qtd += product.amount;
+      }
 
-      // aux = product.id_product;
-    // }
+      aux = product.id_product;
 
     // for (let i = 1; i < salesProduct.length; i++) {
     //   for (let j = 0; j < salesProductF.length; j++) {
