@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { getConnection, getCustomRepository } from "typeorm";
+import { getConnection, getCustomRepository, IsNull } from "typeorm";
 import Products from "../models/Products";
 import Sales from "../models/Sales";
 import SalesProduct from "../models/SalesProduct";
@@ -83,42 +83,69 @@ class SaleProductController {
     return response.json(saleProductView.renderMany(salesProduct));
   }
 
-  // async showQtdSomada(request: Request, response: Response) {
+  async showRelatory(request: Request, response: Response) {
 
-  //   const saleProductRepository = getCustomRepository(SaleProductRepository);
-  //   const salesProduct = await saleProductRepository.find({});
-  //   const salesProductF = []
+    const saleProductRepository = getCustomRepository(SaleProductRepository);
+    const productRepository = getCustomRepository(ProductRepository);
+    const salesProduct = await saleProductRepository.find({});
 
-  //   for(const sp of salesProduct)
-  //   {
-  //     let cont = 0;
-  //     if (salesProductF == []) {
-  //       salesProductF.push(sp)
-  //       cont = 1;
-  //     } else {
-  //       for (const sp2 of salesProduct)
-  //       {
-  //         if(sp.productIdProduct == sp2.productIdProduct)
-  //         {
-  //           cont = 1;
-  //         }
-  //       }
-  //     }
-  //     if (cont == 0) {
-  //       salesProductF.push(sp);
-  //     }
-  //   }
+    let spShow: SalesProduct[];
 
-  //   for (let i = 1; i < salesProduct.length; i++) {
-  //     for (let j = 0; j < salesProductF.length; j++) {
-  //       if (salesProduct[i].productIdProduct == salesProductF[j].product_id) {
-  //         salesProductF[j].qtd += salesProduct[i].qtd;
-  //       }
-  //     }
-  //   }
+    // let aux = "";
 
-  //   return response.json(saleProductView.renderMany(salesProductF));
-  // }
+    for(const sp of salesProduct)
+    {
+
+      const product = await productRepository.findOne({id_product:sp.productIdProduct})
+
+      let cont = 0;
+
+      for (let i = 0; i < salesProduct.length; i++)
+      {
+        if(spShow == null)
+        {
+          spShow.push(sp[i])
+          cont = 1
+        }else{
+          for(let j = 0; j < spShow.length; j++)
+          {
+            if(product.id_product == spShow[j].productIdProduct)
+            {
+              cont = 1;
+            }
+          }
+        }
+        if(cont == 0)
+        {
+          spShow.push(sp[i])
+        }
+      }
+
+      // if(spShow != null)
+      // {
+      //   spShow
+      // }
+
+      // if(product.id_product == aux)
+      // {
+      //   spShow.price += product.price;
+      //   spShow.qtd += product.amount;
+      // }
+
+      // aux = product.id_product;
+      
+    }
+
+    // for (let i = 1; i < salesProduct.length; i++) {
+    //   for (let j = 0; j < salesProductF.length; j++) {
+    //     if (salesProduct[i].productIdProduct == salesProductF[j].product_id) {
+    //       salesProductF[j].qtd += salesProduct[i].qtd;
+    //     }
+    //   }
+    // }
+
+    return response.json(saleProductView.renderMany(spShow));
+  }
 
   
 }

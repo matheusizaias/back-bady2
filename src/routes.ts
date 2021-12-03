@@ -40,7 +40,7 @@ router.get("/show-sales-by-constumer/:costumer", saleController.showSaleByCostum
 
 //router.post("/new-saleProduct,", saleProductController.create);
 router.get("/show-sale-product", saleProductController.show);
-// router.get("/showQtdSomada", saleProductController.showQtdSomada);
+router.get("/showRelatory", saleProductController.showRelatory);
 
 router.post("/new-category", categoryController.create);
 router.get("/show-category", categoryController.show);
