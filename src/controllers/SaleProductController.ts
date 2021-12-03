@@ -94,43 +94,28 @@ class SaleProductController {
       }
     );
 
-    // let aux = "";
-
-    for (const sp of salesProduct) {
-      const product = await productRepository.findOne({
-        id_product: sp.productIdProduct,
-      });
+    const aux = await saleProductRepository.find();
 
     
 
-      // let cont = 0;
+    for (const sp of salesProduct) {
+      const spProduct = await saleProductRepository.findOne({
+        productIdProduct: sp.productIdProduct,
+      });
 
-      // if (spShow.length == 0) {
+      // let aux = "";
+
+      for(let j = 0; j < salesProduct.length; j++)
+      {
+        if(sp.productIdProduct == aux[j].productIdProduct && sp.salesIdSale != aux[j].salesIdSale)
+        {
+          salesProduct[j].qtd += spProduct.qtd;
+        }
+      }
+
       
-      //   cont = 1;
-      // }
-      // } else {
-      //   for (const j of spShow) {
-      //     if (product.id_product == j.productIdProduct) {
-      //       cont = 1;
-      //     }
-      //   }
-      // }
-      // if (cont == 0) {
-      //   spShow.push(sp);
-      // }
 
-      // if(spShow != null)
-      // {
-      //   spShow
-      // }
-
-      // if(product.id_product == aux)
-      // {
-      //   sp.qtd += product.amount;
-      // }
-
-      // aux = product.id_product;
+      
 
     // for (let i = 1; i < salesProduct.length; i++) {
     //   for (let j = 0; j < salesProductF.length; j++) {
